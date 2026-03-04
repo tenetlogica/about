@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SpellService } from '../services/spell.service';
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,7 @@ import { NgOptimizedImage } from '@angular/common';
             </a>
           </div>
           
-          <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
+          <div class="hidden md:ml-6 md:flex md:items-center md:space-x-6">
             <a routerLink="/" 
                routerLinkActive="bg-slate-100 text-slate-900"
                [routerLinkActiveOptions]="{exact: true}"
@@ -59,6 +59,15 @@ import { NgOptimizedImage } from '@angular/common';
                class="px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">
               {{ spellService.isArcane() ? 'Alchemies' : 'Services' }}
             </a>
+            <a routerLink="/careers" 
+               routerLinkActive="bg-slate-100 text-slate-900"
+               [routerLinkActiveOptions]="{exact: true}" 
+               [class]="spellService.isArcane() 
+                 ? 'text-purple-200 hover:text-white hover:bg-purple-900/20' 
+                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'"
+               class="px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300">
+              {{ spellService.isArcane() ? 'Guild' : 'Careers' }}
+            </a>
             <a routerLink="/contact" 
                routerLinkActive="bg-blue-700 shadow-inner"
                [class]="spellService.isArcane() 
@@ -68,6 +77,74 @@ import { NgOptimizedImage } from '@angular/common';
               {{ spellService.isArcane() ? 'Summon Us' : 'Contact Us' }}
             </a>
           </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="-mr-2 flex items-center md:hidden">
+            <button (click)="toggleMobileMenu()" type="button" 
+                    [class]="spellService.isArcane() ? 'text-purple-200 hover:text-white hover:bg-purple-900/20' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'"
+                    class="inline-flex items-center justify-center p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-current transition-colors duration-300">
+              <span class="sr-only">Open main menu</span>
+              <span class="material-icons" [class.hidden-forced]="isMobileMenuOpen()">menu</span>
+              <span class="material-icons" [class.hidden-forced]="!isMobileMenuOpen()">close</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="md:hidden" [class.hidden]="!isMobileMenuOpen()">
+        <div class="px-2 pt-2 pb-3 space-y-1 border-t"
+             [class]="spellService.isArcane() ? 'border-purple-500/20 bg-slate-900' : 'border-slate-200 bg-white'">
+          <a routerLink="/" 
+             (click)="closeMobileMenu()"
+             routerLinkActive="bg-slate-100 text-slate-900"
+             [routerLinkActiveOptions]="{exact: true}"
+             [class]="spellService.isArcane() 
+               ? 'text-purple-200 hover:text-white hover:bg-purple-900/20 block' 
+               : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 block'"
+             class="px-3 py-2 rounded-md text-base font-medium transition-colors duration-300">
+            {{ spellService.isArcane() ? 'Sanctum' : 'Home' }}
+          </a>
+          <a routerLink="/about" 
+             (click)="closeMobileMenu()"
+             routerLinkActive="bg-slate-100 text-slate-900"
+             [routerLinkActiveOptions]="{exact: true}"
+             [class]="spellService.isArcane() 
+               ? 'text-purple-200 hover:text-white hover:bg-purple-900/20 block' 
+               : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 block'"
+             class="px-3 py-2 rounded-md text-base font-medium transition-colors duration-300">
+            {{ spellService.isArcane() ? 'Grimoire' : 'About' }}
+          </a>
+          <a routerLink="/services" 
+             (click)="closeMobileMenu()"
+             routerLinkActive="bg-slate-100 text-slate-900"
+             [routerLinkActiveOptions]="{exact: true}"
+             [class]="spellService.isArcane() 
+               ? 'text-purple-200 hover:text-white hover:bg-purple-900/20 block' 
+               : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 block'"
+             class="px-3 py-2 rounded-md text-base font-medium transition-colors duration-300">
+            {{ spellService.isArcane() ? 'Rituals' : 'Services' }}
+          </a>
+          <a routerLink="/careers" 
+             (click)="closeMobileMenu()"
+             routerLinkActive="bg-slate-100 text-slate-900"
+             [routerLinkActiveOptions]="{exact: true}"
+             [class]="spellService.isArcane() 
+               ? 'text-purple-200 hover:text-white hover:bg-purple-900/20 block' 
+               : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 block'"
+             class="px-3 py-2 rounded-md text-base font-medium transition-colors duration-300">
+            {{ spellService.isArcane() ? 'Apprenticeship' : 'Careers' }}
+          </a>
+          <a routerLink="/contact" 
+             (click)="closeMobileMenu()"
+             routerLinkActive="bg-blue-700 shadow-inner"
+             [routerLinkActiveOptions]="{exact: true}"
+             [class]="spellService.isArcane() 
+               ? 'bg-purple-600 text-white hover:bg-purple-500 shadow-[0_0_15px_rgba(147,51,234,0.5)] block' 
+               : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm block'"
+             class="px-3 py-2 rounded-md text-base font-medium transition-all duration-300 mt-4">
+            {{ spellService.isArcane() ? 'Summon Us' : 'Contact Us' }}
+          </a>
         </div>
       </div>
     </nav>
@@ -75,4 +152,14 @@ import { NgOptimizedImage } from '@angular/common';
 })
 export class NavbarComponent {
   spellService = inject(SpellService);
+
+  isMobileMenuOpen = signal(false);
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.update(v => !v);
+  }
+
+  closeMobileMenu() {
+    this.isMobileMenuOpen.set(false);
+  }
 }

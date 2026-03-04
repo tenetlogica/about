@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { SpellService } from '../services/spell.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from "@angular/router";
 
@@ -59,20 +59,31 @@ import { RouterLink } from "@angular/router";
         
         <div class="mt-12 pt-8 border-t border-current/10 flex flex-col md:flex-row justify-between items-center text-xs">
           <p>&copy; {{ year }} Tenet Logica. All rights reserved.</p>
-          <p class="mt-2 md:mt-0 cursor-help" title="Open console (F12) for a surprise">
-            {{ spellService.isArcane() ? 'Mischief Managed.' : 'The truth is hidden in the logs.' }}
+          <p class="text-center mt-2 md:mt-0 cursor-help" title="Open console (F12) for a surprise">
+            {{ spellService.isArcane() ? 'Mischief Managed.' : hintStatement }}
           </p>
         </div>
       </div>
     </footer>
   `
 })
-export class FooterComponent {
+export class FooterComponent implements OnInit {
   spellService = inject(SpellService);
+  private platformId = inject(PLATFORM_ID);
+  hintStatement = 'The truth is hidden in the logs.';
   year = new Date().getFullYear();
 
   constructor() {
     this.logHint();
+  }
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        this.hintStatement = 'The truth will be revealed to those who can ?search. We don\'t do typos.';
+      }
+    }
   }
 
   private logHint() {
@@ -103,9 +114,9 @@ export class FooterComponent {
 (___________\\____.dBBBb.________)____)
 %c
 Type "castSpell(<The spell that reveals Marauder's secrets>)" to witness the truth.
-      `, 
-      'font-family: monospace; color: #8b5cf6; font-weight: bold;', 
-      'font-family: sans-serif; color: #64748b; font-size: 12px;');
+      `,
+        'font-family: monospace; color: #8b5cf6; font-weight: bold;',
+        'font-family: sans-serif; color: #64748b; font-size: 12px;');
     }, 2000);
   }
 }

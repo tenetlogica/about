@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SpellService } from '../services/spell.service';
 
 @Component({
@@ -70,7 +70,7 @@ import { SpellService } from '../services/spell.service';
               <div class="space-y-4 text-slate-600">
                 <p>We don't do standard interviews. We look for problem solvers.</p>
                 <p class="font-mono bg-slate-200 p-3 rounded text-sm text-slate-800">
-                  > Hint: The truth is hidden in plain sight.
+                  > Hint: {{ hintStatement }}
                 </p>
                 <p>Once you've cleared the first test, just follow the instructions to join the us! We're excited to have you.</p>
               </div>
@@ -95,6 +95,17 @@ import { SpellService } from '../services/spell.service';
     </div>
   `
 })
-export class CareersComponent {
+export class CareersComponent implements OnInit {
     spellService = inject(SpellService);
+    private platformId = inject(PLATFORM_ID);
+    hintStatement = 'The truth is hidden in plain sight.';
+
+    ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        this.hintStatement = 'The truth will be revealed to those who can ?search. We don\'t do typos.';
+      }
+    }
+  }
 }
